@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, BigInteger, String, DateTime
 from .base import Base
 
 class YoutubeTrack(Base):
@@ -6,11 +6,10 @@ class YoutubeTrack(Base):
     id = Column(String, primary_key=True)
     channel_id = Column(String, index=True, nullable=False)
     name = Column(String)
-    views = Column(Integer)
+    views = Column(BigInteger)
     release_date = Column(DateTime)
     cover_url = Column(String)
-    video_url = Column(String)
-    like_count = Column(Integer)
+    like_count = Column(BigInteger)
 
     def to_dict(self):
         return {
@@ -18,8 +17,7 @@ class YoutubeTrack(Base):
             "channel_id": self.channel_id,
             "name": self.name,
             "views": self.views,
-            "duration": self.duration,
             "release_date": self.release_date,
             "cover_url": self.cover_url,
-            "track_url": self.track_url,
+            "like_count": self.like_count,
         }

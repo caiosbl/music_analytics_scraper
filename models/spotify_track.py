@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, ARRAY
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, DateTime, ARRAY
 from .base import Base
 
 class SpotifyTrack(Base):
@@ -7,7 +7,7 @@ class SpotifyTrack(Base):
     artist_id = Column(String, index=True, nullable=False)
     album_id = Column(String, ForeignKey('spotify_album.id'), index=True, nullable=False)
     name = Column(String)
-    streams = Column(Integer)
+    streams = Column(BigInteger)
     duration = Column(Integer)
     # Spotify not always has full information about release date, so we use string instead of date
     release_date = Column(String)
