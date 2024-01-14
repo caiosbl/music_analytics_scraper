@@ -5,7 +5,7 @@ from api_clients import SpotifyApiClient, YoutubeApiClient
 from database import DatabaseManager
 from scrapers.spotify_scrap import SpotifyScrap
 from scrapers.youtube_scrap import YouTubeScraper
-from repositories import SpotifyAlbumsRepository, SpotifyAlbumTracksRepository, SpotifyTrackRepository
+from repositories import SpotifyAlbumsRepository, SpotifyAlbumTracksRepository, SpotifyTrackRepository, YoutubeTrackRepository
 from utils import setup_env
 
 class App:
@@ -52,20 +52,24 @@ class App:
             session=self.db.session,
             config=self.config,
         )
+        self.repositories.youtube_track = YoutubeTrackRepository(
+            api_client=self.youtube_api_client,
+            session=self.db.session,
+            config=self.config,
+        )
 
 
     def run(self):
         parser = argparse.ArgumentParser()
         parser.add_argument("-spotify_artist_id", help="Spotify Artist ID")
         parser.add_argument("-youtube_channel_id", help="YouTube channel ID")
-        parser.add_argument("-filename", help="Output filename")
         args = parser.parse_args()
 
         if args.spotify_artist_id:
             self.spotify_scraper.main(args.spotify_artist_id)
         
         if args.youtube_channel_id:
-            self.youtube_scraper.main(args.youtube_channel_id, args.filename)
+            self.youtube_scraper.main(args.youtube_channel_id)
 
 
 if __name__ == "__main__":
