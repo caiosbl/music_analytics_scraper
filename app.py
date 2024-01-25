@@ -1,5 +1,4 @@
 import argparse
-import configparser
 
 from api_clients import SpotifyApiClient, YoutubeApiClient
 from database import DatabaseManager
