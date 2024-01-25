@@ -61,7 +61,7 @@ database: music_analytics
 
 Example of running:
 ```bash
-docker-compose run python app.py -spotify_artist_id 0du5cEVh5yTK9QJze8zA0C -youtube_channel_id UCoUM-UJ7rirJYP8CQ0EIaHA
+docker-compose run app python app.py -spotify_artist_id 0du5cEVh5yTK9QJze8zA0C -youtube_channel_id UCoUM-UJ7rirJYP8CQ0EIaHA
 ```
 
 ## Contributing
