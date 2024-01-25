@@ -5,7 +5,13 @@ from api_clients import SpotifyApiClient, YoutubeApiClient
 from database import DatabaseManager
 from scrapers.spotify_scrap import SpotifyScrap
 from scrapers.youtube_scrap import YouTubeScraper
-from repositories import SpotifyAlbumsRepository, SpotifyAlbumTracksRepository, SpotifyTrackRepository, YoutubeTrackRepository
+from repositories import (
+    SpotifyAlbumsRepository,
+    SpotifyAlbumTracksRepository,
+    SpotifyStreamsRepository,
+    SpotifyTrackRepository,
+    YoutubeTrackRepository
+)
 from utils import setup_env
 
 class App:
@@ -48,6 +54,11 @@ class App:
             config=self.config,
         )
         self.repositories.spotify_track = SpotifyTrackRepository(
+            api_client=self.spotify_api_client,
+            session=self.db.session,
+            config=self.config,
+        )
+        self.repositories.spotify_streams = SpotifyStreamsRepository(
             api_client=self.spotify_api_client,
             session=self.db.session,
             config=self.config,

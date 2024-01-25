@@ -31,7 +31,7 @@ class SpotifyTrackRepository:
                         artist_id=artist_id,
                         artist_ids=[artist["id"] for artist in track["artists"]],
                         cover_url=track["album"]["images"][0]["url"] if track["album"]["images"] else "",
-                        track_url=f"https://open.spotify.com/track/{track['uri'].split(':')[-1]}",
+                        url=f"https://open.spotify.com/track/{track['uri'].split(':')[-1]}",
                     ))
             
                 pbar.update(len(album_tracks_chunk))

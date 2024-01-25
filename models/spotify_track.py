@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, DateTime, ARRAY
+from sqlalchemy import Column, Integer, BigInteger, String, ForeignKey, ARRAY
 from .base import Base
 
 class SpotifyTrack(Base):
@@ -14,7 +14,7 @@ class SpotifyTrack(Base):
     popularity = Column(Integer)
     artist_ids = Column(ARRAY(String), index=True)
     cover_url = Column(String)
-    track_url = Column(String)
+    url = Column(String)
 
     def to_dict(self):
         return {
@@ -28,5 +28,5 @@ class SpotifyTrack(Base):
             'popularity': self.popularity,
             'artist_ids': self.artist_ids,
             'cover_url': self.cover_url,
-            'track_url': self.track_url,
+            'url': self.url,
         }
