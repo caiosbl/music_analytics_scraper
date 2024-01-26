@@ -22,10 +22,9 @@ class StreamPlaysScrapThread(threading.Thread):
             )
             stream_element = driver.find_element(By.XPATH, SPOTIFY_STREAMS_COUNT_XPATH)
             streams_count = int(stream_element.text.replace('.', '').replace(',', ''))
-            self.track.streams_count = streams_count
+            self.track.streams = streams_count
         except Exception as e:
-            print(f"Error getting streams for track {self.track.id}: {e}")
-            raise FailToGetStreamsException()
+            raise FailToGetStreamsException(e)
         finally:
            self.pool.release_driver(driver)
 

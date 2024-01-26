@@ -34,7 +34,9 @@ class SpotifyStreamsRepository:
                     except Exception as e:
                         failed_threads.put(thread)
 
-            for thread in failed_threads:
+
+            while not failed_threads.empty():
+                thread = failed_threads.get()
                 thread.run()
                 tracks_with_streams.append(thread.track)
                 pbar.update(1)
@@ -47,6 +49,7 @@ class SpotifyStreamsRepository:
         tracks_with_streams = self.get_tracks_streams(tracks)
 
         for track in tracks_with_streams:
-            self.session.merge(track)
+            print(track.streams)
+            self.session.add(track)
 
         self.session.commit()
