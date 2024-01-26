@@ -49,7 +49,6 @@ class SpotifyStreamsRepository:
         tracks_with_streams = self.get_tracks_streams(tracks)
 
         for track in tracks_with_streams:
-            print(track.streams)
             self.session.add(track)
 
         self.session.commit()
