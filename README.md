@@ -26,9 +26,8 @@ To usage this repository, you need to have:
 
 With, these keys:
 
-- Create an `.env` file in the root of the project
-
-Add the following variables to the file:
+- Copy .env.example file and rename it to .env
+- Replace the following values of the variables with your keys
 
 ```bash
 SPOTIFY_API_CLIENT_ID=your_spotify_client_id

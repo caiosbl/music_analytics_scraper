@@ -8,8 +8,7 @@ run_youtube:
 	docker-compose run app python app.py -youtube_artist_id $(id)
 
 teardown:
-	docker-compose -p $(PROJECT_NAME) down -v
-	docker ps -q --filter "status=exited" | xargs docker rm
+	docker-compose down
 
 clean_cache:
 	find . -name "*.cache" -delete
