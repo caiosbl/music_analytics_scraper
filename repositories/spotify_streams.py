@@ -46,7 +46,7 @@ class SpotifyStreamsRepository:
         tracks = self.session.query(SpotifyTrack).filter_by(artist_id=artist_id).all()
         tracks_with_streams = self.get_tracks_streams(tracks)
 
-        self.session.bulk_update_mappings(SpotifyTrack, [
-            track.to_dict() for track in tracks_with_streams
-        ])
+        for track in tracks_with_streams:
+            self.session.merge(track)
+
         self.session.commit()
