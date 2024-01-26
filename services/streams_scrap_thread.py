@@ -11,19 +11,23 @@ class StreamPlaysScrapThread(threading.Thread):
         threading.Thread.__init__(self)
         self.track = track
         self.pool = pool
-        self.run(implicitly_wait)
+        self.implicitly_wait = implicitly_wait
 
-    def run(self, implicitly_wait=5):
+    def run(self):
         driver = self.pool.get_driver()
         try:
             driver.get(self.track.url)
-            WebDriverWait(driver, implicitly_wait).until(
+            WebDriverWait(driver, self.implicitly_wait).until(
                 lambda x: x.find_element(By.XPATH, SPOTIFY_STREAMS_COUNT_XPATH)
             )
             stream_element = driver.find_element(By.XPATH, SPOTIFY_STREAMS_COUNT_XPATH)
             streams_count = int(stream_element.text.replace('.', '').replace(',', ''))
             self.track.streams_count = streams_count
         except Exception as e:
-            print(f"Error getting streams for track {self.track['id']}: {e}")
+            print(f"Error getting streams for track {self.track.id}: {e}")
+            raise FailToGetStreamsException()
         finally:
            self.pool.release_driver(driver)
+
+class FailToGetStreamsException(Exception):
+    pass

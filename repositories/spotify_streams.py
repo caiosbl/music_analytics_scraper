@@ -1,6 +1,7 @@
 from models import SpotifyTrack
 from services import WebDriverPool, StreamPlaysScrapThread
 from tqdm import tqdm
+from queue import Queue
 
 class SpotifyStreamsRepository:
     def __init__(self, api_client, session, config):
@@ -17,6 +18,7 @@ class SpotifyStreamsRepository:
 
     def get_tracks_streams(self, tracks):
         tracks_with_streams = []
+        failed_threads = Queue()
         with tqdm(total=len(tracks), desc="Getting track streams") as pbar:
             for i in range(0, len(tracks), self.scrapping_max_threads):
                 threads = []
@@ -25,9 +27,19 @@ class SpotifyStreamsRepository:
                     thread.start()
                     threads.append(thread)
                 for thread in threads:
-                    thread.join()
-                    tracks_with_streams.append(thread.track)
-                    pbar.update(1)
+                    try:
+                        thread.join()
+                        tracks_with_streams.append(thread.track)
+                        pbar.update(1)
+                    except Exception as e:
+                        failed_threads.put(thread)
+
+            for thread in failed_threads:
+                thread.run()
+                tracks_with_streams.append(thread.track)
+                pbar.update(1)
+
+                    
         return tracks_with_streams
 
     def insert_tracks_stream_counts(self, artist_id):

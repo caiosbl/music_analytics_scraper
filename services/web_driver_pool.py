@@ -16,11 +16,11 @@ class WebDriverPool:
 
     def get_webdriver(self, webdriver_chromium_path, webdriver_path):
         webdriver_option = webdriver.ChromeOptions()
-        webdriver_option.add_argument('--headless')
-        webdriver_option.add_argument('--no-sandbox')
-        webdriver_option.add_argument("--disable-gpu")
-        webdriver_option.add_argument("window-size=1200x600")
         webdriver_option.binary_location = webdriver_chromium_path
+        webdriver_option.add_argument("--no-sandbox")
+        webdriver_option.add_argument("--headless")
+        webdriver_option.add_argument("--disable-gpu")
+        webdriver_option.add_argument("--disable-dev-shm-usage")
         
         return webdriver.Chrome(
             options=webdriver_option,
