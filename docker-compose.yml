@@ -1,7 +1,13 @@
 version: '3.8'
+x-docker: &default-project
+  PROJECT_NAME: ${PROJECT_NAME}
+
 services:
   app:
     build: .
+    container_name: "${PROJECT_NAME}_app"
+    labels:
+      - "com.docker.compose.project=${PROJECT_NAME}"
     depends_on:
       - db
     environment:
@@ -18,6 +24,9 @@ services:
 
   db:
     image: postgres:latest
+    container_name: "${PROJECT_NAME}_db"
+    labels:
+      - "com.docker.compose.project=${PROJECT_NAME}"
     environment:
       - POSTGRES_DB=music_stats
       - POSTGRES_USER=postgres
@@ -29,6 +38,6 @@ services:
       - postgres_data:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
 volumes:
   postgres_data:
-

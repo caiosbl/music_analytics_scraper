@@ -14,6 +14,10 @@ This repository contains code and documentation for scraping music statistics fr
 
 The Music Analytics Scraper project aims to collect and analyze music statistics from different platforms and sources. By scraping data from popular music streaming services, social media platforms, and other sources, we can gain insights into music trends, popularity, and user preferences.
 
+## Requirements
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
 
 ## Usage
 To usage this repository, you need to have:
@@ -52,9 +56,17 @@ database: music_analytics
 ```
 
 Example of running:
+
+## Spotify:
 ```bash
-docker-compose run app python app.py -spotify_artist_id 0du5cEVh5yTK9QJze8zA0C -youtube_channel_id UCoUM-UJ7rirJYP8CQ0EIaHA
+make run_spotify -id=0du5cEVh5yTK9QJze8zA0C
 ```
+
+## Youtube:
+```bash
+make run_youtube -id=UCoUM-UJ7rirJYP8CQ0EIaHA
+```
+
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a [Pull Request](https://github.com/caiosbl/music_analytics_scraper/compare).
