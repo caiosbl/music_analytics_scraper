@@ -8,7 +8,7 @@ class YoutubeTrackRepository:
         self.api_client = api_client
         self.chunk_size = config['settings'].getint('youtube.chunk.size')
 
-    def get_videos(self, channel_id):
+    def get_videos_by_id(self, channel_id):
         video_ids = []
         videos = []
         next_page_token = ""
@@ -35,7 +35,10 @@ class YoutubeTrackRepository:
                 videos.extend(video_details)
                 pbar.update(len(video_ids_chunk))
 
-        return videos
+        return {
+            video.id: video
+            for video in videos
+        }
 
     def get_video_details(self, video_ids):
         videos = []
@@ -59,11 +62,12 @@ class YoutubeTrackRepository:
 
 
     def insert_tracks(self, channel_id):
-        tracks = self.get_videos(channel_id)
+        tracks_by_id = self.get_videos_by_id(channel_id)
+
         raw_insert = postgresql.insert(YoutubeTrack).values(
             [
                 track.to_dict()
-                for track in tracks
+                for track in tracks_by_id.values()
             ]
         )
         stmt = raw_insert.on_conflict_do_update(
