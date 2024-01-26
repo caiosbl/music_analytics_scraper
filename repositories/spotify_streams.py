@@ -1,6 +1,3 @@
-import tqdm
-import tqdm
-import chromedriver_autoinstaller
 from models import SpotifyTrack
 from services import WebDriverPool, StreamPlaysScrapThread
 from tqdm import tqdm
@@ -10,17 +7,21 @@ class SpotifyStreamsRepository:
         self.session = session
         self.api_client = api_client
         self.scrapping_max_threads = config['settings'].getint('spotify.scrapping.max_threads')
-        chromedriver_autoinstaller.install()
-        self.web_driver_pool = WebDriverPool(self.scrapping_max_threads)
+        self.implicitly_wait = config['settings'].getint('spotify.scrapping.implicitly_wait')
+        self.web_driver_pool = WebDriverPool(
+            size=self.scrapping_max_threads,
+            webdriver_chromium_path=config['settings']['chromium.binary.path'],
+            webdriver_path=config['settings']['chromium.driver.path']
+        )
 
 
     def get_tracks_streams(self, tracks):
         tracks_with_streams = []
-        with tqdm.tqdm(total=len(tracks), desc="Getting track streams") as pbar:
+        with tqdm(total=len(tracks), desc="Getting track streams") as pbar:
             for i in range(0, len(tracks), self.scrapping_max_threads):
                 threads = []
                 for track in tracks[i: i+ self.scrapping_max_threads]:
-                    thread = StreamPlaysScrapThread(track, self.web_driver_pool)
+                    thread = StreamPlaysScrapThread(track, self.web_driver_pool, self.implicitly_wait)
                     thread.start()
                     threads.append(thread)
                 for thread in threads:

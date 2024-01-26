@@ -15,14 +15,6 @@ This repository contains code and documentation for scraping music statistics fr
 The Music Analytics Scraper project aims to collect and analyze music statistics from different platforms and sources. By scraping data from popular music streaming services, social media platforms, and other sources, we can gain insights into music trends, popularity, and user preferences.
 
 
-## Build
-
-To build this project, you will need to have Docker installed, and run this command:
-
-```bash
-docker-compose up --build
-```
-
 ## Usage
 To usage this repository, you need to have:
 - Spotify API key, you can get [here](https://developer.spotify.com/documentation/web-api/tutorials/getting-started)

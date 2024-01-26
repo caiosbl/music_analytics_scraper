@@ -7,16 +7,17 @@ from tqdm import tqdm
 SPOTIFY_STREAMS_COUNT_XPATH = '//*[@id="main"]/div/div[2]/div[3]/div[1]/div[2]/div[2]/div/div/div[2]/main/section/div[1]/div[5]/div/span[4]'
 
 class StreamPlaysScrapThread(threading.Thread):
-    def __init__(self, track, pool):
+    def __init__(self, track, pool, implicitly_wait=5):
         threading.Thread.__init__(self)
         self.track = track
         self.pool = pool
+        self.run(implicitly_wait)
 
-    def run(self):
+    def run(self, implicitly_wait=5):
         driver = self.pool.get_driver()
         try:
             driver.get(self.track.url)
-            WebDriverWait(driver, 10).until(
+            WebDriverWait(driver, implicitly_wait).until(
                 lambda x: x.find_element(By.XPATH, SPOTIFY_STREAMS_COUNT_XPATH)
             )
             stream_element = driver.find_element(By.XPATH, SPOTIFY_STREAMS_COUNT_XPATH)
