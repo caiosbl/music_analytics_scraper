@@ -53,7 +53,7 @@ class YoutubeTrackRepository:
                 channel_id=item["snippet"]["channelId"],
                 name=item["snippet"]["title"],
                 release_date=item["snippet"]["publishedAt"],
-                like_count=item["statistics"]["likeCount"],
+                like_count=item["statistics"].get("likeCount"),
                 views=item["statistics"]["viewCount"],
                 cover_url=item["snippet"]["thumbnails"]["default"]["url"],
             ))
