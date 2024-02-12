@@ -8,6 +8,6 @@ class YouTubeService:
     def get_videos(self, channel_id):
         self.repositories.youtube_track.insert_tracks(channel_id)
 
-    def main(self, channel_id):
+    def update_stats(self, channel_id):
         self.get_videos(channel_id)
 

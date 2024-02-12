@@ -10,5 +10,8 @@ class ArtistRepository:
         self.session.commit()
         return artist
 
-    def get_artist_by_id(self, artist_id):
+    def get_artist(self, artist_id):
         return self.session.query(Artist).get(artist_id)
+    
+    def get_all_artists(self):
+        return self.session.query(Artist).all()

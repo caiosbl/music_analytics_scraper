@@ -1,5 +1,3 @@
-import argparse
-
 from api_clients import SpotifyApiClient, YoutubeApiClient
 from database import DatabaseManager
 from services import (
@@ -15,6 +13,7 @@ from repositories import (
     YoutubeTrackRepository
 )
 from utils import setup_env
+from cli import CLI
 
 class App:
     def __init__(self):
@@ -25,6 +24,10 @@ class App:
         self.youtube_api_client = YoutubeApiClient(self.config).api_client
         self._init_repositories()
         self._init_services()
+        self.cli = CLI(
+            repositories=self.repositories,
+            services=self.services,
+        )
 
 
     def _init_repositories(self):
@@ -82,16 +85,7 @@ class App:
         )
 
     def run(self):
-        parser = argparse.ArgumentParser()
-        parser.add_argument("-spotify_artist_id", help="Spotify Artist ID")
-        parser.add_argument("-youtube_channel_id", help="YouTube channel ID")
-        args = parser.parse_args()
-
-        if args.spotify_artist_id:
-            self.services.spotify_service.main(args.spotify_artist_id)
-        
-        if args.youtube_channel_id:
-            self.youtube_service.main(args.youtube_channel_id)
+        self.cli.cli()
 
 
 if __name__ == "__main__":

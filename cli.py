@@ -1,13 +1,14 @@
 import click
+import tqdm
 from services.artist_service import ArtistNotFoundError
 
 class CLI:
     def __init__(
             self,
-            config,
-            services
+            services,
+            repositories
         ):
-        self.config = config
+        self.artist_repository = repositories.artist
         self.artist_service = services.artist_service
         self.spotify_service = services.spotify_service
         self.youtube_service = services.youtube_service
@@ -78,11 +79,33 @@ class CLI:
             print(f"Error: {e}")
 
 
+    def _update_artist_stats(self, artist, skip_spotify, skip_youtube):
+        if not skip_youtube:
+            self.youtube_service.update_stats(artist.youtube_id)
+
+        if not skip_spotify:
+            self.spotify_service.update_stats(artist.spotify_id)
+
+
     @cli.command()
     @click.argument('artist_id', required=True)
-    def update_artist_stats(self):
-        pass
+    @click.option('--skip_spotify', is_flag=True, help='Skip Spotify')
+    @click.option('--skip_youtube', is_flag=True, help='Skip YouTube')
+    def update_artist_stats(self, artist_id, skip_spotify, skip_youtube):
+        artist = self.artist_repository.get_artist(artist_id)
+        if not artist:
+            print(f"Artist {artist_id} not found")
+            return
+        
+        self._update_artist_stats(artist, skip_spotify, skip_youtube)
 
-    
-    def run(self):
-        print(f"Running with config: {self.config}")
+    @cli.command()
+    @click.option('--skip_spotify', is_flag=True, help='Skip Spotify')
+    @click.option('--skip_youtube', is_flag=True, help='Skip YouTube')
+    def update_all_artists_stats(self, skip_spotify, skip_youtube):
+        artists = self.artist_service.get_all_artists()
+        with tqdm.tqdm(total=len(artists), desc="Updating artists stats") as pbar:
+            for artist in artists:
+                print(f"Updating stats for artist {artist.name}")
+                self._update_artist_stats(artist, skip_spotify, skip_youtube)
+                pbar.update(1)
