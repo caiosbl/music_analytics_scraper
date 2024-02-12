@@ -13,7 +13,6 @@ class SpotifyTrackRepository:
 
     def get_tracks(self, artist_id):
         album_tracks = self.session.query(SpotifyAlbumTrack).filter_by(artist_id=artist_id).all()
-        tracks = []
 
         console.print(f"Getting tracks from albums...", style="yellow")
 
@@ -24,7 +23,7 @@ class SpotifyTrackRepository:
                 album_tracks_info = self.api_client.tracks(album_tracks_ids)
                 
                 for track in album_tracks_info["tracks"]:
-                    tracks.append(SpotifyTrack(
+                    yield SpotifyTrack(
                         id=track["uri"],
                         name=track["name"],
                         duration=track["duration_ms"],
@@ -35,19 +34,16 @@ class SpotifyTrackRepository:
                         artist_ids=[artist["id"] for artist in track["artists"]],
                         cover_url=track["album"]["images"][0]["url"] if track["album"]["images"] else "",
                         url=f"https://open.spotify.com/track/{track['uri'].split(':')[-1]}",
-                    ))
+                    )
             
                 pbar.update(len(album_tracks_chunk))
 
-        return tracks
-
 
     def insert_tracks(self, artist_id):
-        album_tracks = self.get_tracks(artist_id)
         raw_insert = postgresql.insert(SpotifyTrack).values(
             [
                 track.to_dict()
-                for track in album_tracks
+                for track in self.get_tracks(artist_id)
             ]
         )
         stmt = raw_insert.on_conflict_do_update(
