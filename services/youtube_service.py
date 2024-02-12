@@ -1,4 +1,4 @@
-class YouTubeScraper:
+class YouTubeService:
     def __init__(self, api_client, config, repositories):
         self.api_client = api_client
         self.chunk_size = config['settings'].getint('youtube.chunk.size')

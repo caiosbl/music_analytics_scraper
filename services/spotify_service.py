@@ -1,4 +1,4 @@
-class SpotifyScrap:
+class SpotifyService:
     def __init__(self, config, api_client, repositories):
         self.api_client = api_client
         self.chunk_size = config['settings'].getint('spotify.chunk.size')
