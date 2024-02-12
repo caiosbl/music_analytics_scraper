@@ -1,11 +1,20 @@
 include .env
 export $(shell sed 's/=.*//' .env)
 
-run_spotify:
-	docker-compose run app python app.py -spotify_artist_id $(id)
+add_artist:
+	docker-compose run app python app.py add-artist
 
-run_youtube:
-	docker-compose run app python app.py -youtube_channel_id $(id)
+update_artist:
+	docker-compose run app python app.py update-artist
+
+update_artist_stats:
+	docker-compose run app python app.py update-artist-stats
+
+update_all_artists_stats:
+	docker-compose run app python app.py update-all-artists-stats
+
+list_artists:
+	docker-compose run app python app.py list-artists
 
 teardown:
 	docker-compose down
