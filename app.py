@@ -6,6 +6,7 @@ from services import (
     ArtistService
 )
 from repositories import (
+    ArtistRepository,
     SpotifyAlbumsRepository,
     SpotifyAlbumTracksRepository,
     SpotifyStreamsRepository,
@@ -35,6 +36,10 @@ class App:
             pass
 
         self.repositories = Repositories()
+
+        self.repositories.artist = ArtistRepository(
+            session=self.db.session
+        )
 
         self.repositories.spotify_albums = SpotifyAlbumsRepository(
             api_client=self.spotify_api_client,

@@ -2,7 +2,7 @@ from sqlalchemy import Column, String
 from .base import Base
 
 class Artist(Base):
-    __tablename__ = 'spotify_album_track'
+    __tablename__ = 'artist'
     id = Column(String, primary_key=True)
     name = Column(String, nullable=False)
     spotify_id = Column(String, nullable=True)
