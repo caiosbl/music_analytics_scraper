@@ -26,8 +26,8 @@ class App:
         self._init_repositories()
         self._init_services()
         self.cli = CLI(
-            repositories=self.repositories,
             services=self.services,
+            repositories=self.repositories,
         )
 
 
@@ -78,13 +78,13 @@ class App:
             config=self.config,
             repositories=self.repositories
         )
-        self.services.youtube_scraper = YouTubeService(
+        self.services.youtube_service = YouTubeService(
             api_client=self.youtube_api_client,
             config=self.config,
             repositories=self.repositories
         )
 
-        self.artist_service = ArtistService(
+        self.services.artist_service = ArtistService(
             repositories=self.repositories,
             session=self.db.session
         )

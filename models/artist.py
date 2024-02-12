@@ -1,9 +1,9 @@
-from sqlalchemy import Column, String
+from sqlalchemy import Column, String, Integer
 from .base import Base
 
 class Artist(Base):
     __tablename__ = 'artist'
-    id = Column(String, primary_key=True)
+    id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String, nullable=False)
     spotify_id = Column(String, nullable=True)
     youtube_id = Column(String, nullable=True)

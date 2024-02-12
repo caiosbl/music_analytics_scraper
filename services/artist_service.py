@@ -3,7 +3,7 @@ from models.artist import Artist
 class ArtistService:
     def __init__(self, session, repositories):
         self.session = session
-        self.repositories = repositories
+        self.artist_repository = repositories.artist
     
     def insert_artist(
         self,
