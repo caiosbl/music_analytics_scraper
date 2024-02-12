@@ -17,6 +17,8 @@ selenium = "*"
 chromedriver-autoinstaller = "*"
 sqlalchemy = "*"
 psycopg2-binary = "*"
+click = "*"
+rich = "*"
 
 [dev-packages]
 

@@ -3,3 +3,4 @@ from .spotify_album_tracks import SpotifyAlbumTracksRepository
 from .spotify_track import SpotifyTrackRepository
 from .spotify_streams import SpotifyStreamsRepository
 from .youtube_track import YoutubeTrackRepository
+from .artist import ArtistRepository

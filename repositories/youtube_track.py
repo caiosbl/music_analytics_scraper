@@ -1,6 +1,9 @@
 import tqdm
 from models import YoutubeTrack
 from sqlalchemy.dialects import postgresql
+from rich.console import Console
+
+console = Console()
 
 class YoutubeTrackRepository:
     def __init__(self, api_client, session, config):
@@ -13,7 +16,7 @@ class YoutubeTrackRepository:
         videos = []
         next_page_token = ""
 
-        print(f"Getting videos from channel {channel_id}...")
+        console.print(f"Getting videos from channel {channel_id}...", style="yellow")
 
         while next_page_token is not None:
             request = self.api_client.search().list(
@@ -53,7 +56,7 @@ class YoutubeTrackRepository:
                 channel_id=item["snippet"]["channelId"],
                 name=item["snippet"]["title"],
                 release_date=item["snippet"]["publishedAt"],
-                like_count=item["statistics"]["likeCount"],
+                like_count=item["statistics"].get("likeCount"),
                 views=item["statistics"]["viewCount"],
                 cover_url=item["snippet"]["thumbnails"]["default"]["url"],
             ))

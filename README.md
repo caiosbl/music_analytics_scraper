@@ -35,14 +35,6 @@ SPOTIFY_API_CLIENT_SECRET=your_spotify_client_secret
 YOUTUBE_API_KEY=your_youtube_api_key
 ```
 
-## Running
-Now, we can support Youtube and Spotify,
-you can specify platform to scrape data passing the following arguments:
-
-
-- `-spotify_artist_id`: Spotify artist id
-- `-youtube_channel_id`: Youtube channel id
-
 ## Output
 The result output will be saved in a PostgreSQL database, you can access the database using the following credentials (default) (Please see the [docker-compose.yml](docker-compose.yml) file):
 
@@ -54,18 +46,51 @@ password: mypassword
 database: music_analytics
 ```
 
+## Data content
+
+Current data content:
+- Artist
+- Album
+- Track
+- Artist Statistics
+
+From the following sources:
+- Spotify
+- Youtube
+
 Example of running:
 
-## Spotify:
+## Adding Artist:
 ```bash
-make run_spotify -id=0du5cEVh5yTK9QJze8zA0C
+make add_artist
 ```
 
-## Youtube:
+## Updating Artist ids:
 ```bash
-make run_youtube -id=UCoUM-UJ7rirJYP8CQ0EIaHA
+make update_artist
 ```
 
+## Updating Artist Statistics:
+```bash
+make update_artist_stats
+```
+
+## Updating All Artists Statistics:
+```bash
+make update_all_artists_stats
+```
+
+## Skipping platforms:
+
+Spotify:
+```bash
+make update_all_artists_stats --skip-spotify
+```
+
+Youtube:
+```bash
+make update_all_artists_stats --skip-youtube
+```
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a [Pull Request](https://github.com/caiosbl/music_analytics_scraper/compare).

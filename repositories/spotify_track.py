@@ -1,6 +1,9 @@
 import tqdm
+from rich.console import Console
 from models import SpotifyTrack, SpotifyAlbumTrack
 from sqlalchemy.dialects import postgresql
+
+console = Console()
 
 class SpotifyTrackRepository:
     def __init__(self, api_client, session, config):
@@ -12,7 +15,7 @@ class SpotifyTrackRepository:
         album_tracks = self.session.query(SpotifyAlbumTrack).filter_by(artist_id=artist_id).all()
         tracks = []
 
-        print(f"Getting tracks from albums...")
+        console.print(f"Getting tracks from albums...", style="yellow")
 
         with tqdm.tqdm(total=len(album_tracks), desc="Fetching all tracks") as pbar:
             for index in range(0, len(album_tracks), self.chunk_size):

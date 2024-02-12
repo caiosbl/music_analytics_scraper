@@ -1,10 +1,12 @@
-import argparse
-
 from api_clients import SpotifyApiClient, YoutubeApiClient
 from database import DatabaseManager
-from scrapers.spotify_scrap import SpotifyScrap
-from scrapers.youtube_scrap import YouTubeScraper
+from services import (
+    SpotifyService,
+    YouTubeService,
+    ArtistService
+)
 from repositories import (
+    ArtistRepository,
     SpotifyAlbumsRepository,
     SpotifyAlbumTracksRepository,
     SpotifyStreamsRepository,
@@ -12,6 +14,7 @@ from repositories import (
     YoutubeTrackRepository
 )
 from utils import setup_env
+from cli import CLI
 
 class App:
     def __init__(self):
@@ -21,19 +24,11 @@ class App:
         self.spotify_api_client = SpotifyApiClient(self.config).api_client
         self.youtube_api_client = YoutubeApiClient(self.config).api_client
         self._init_repositories()
-
-
-        self.spotify_scraper = SpotifyScrap(
-            api_client=self.spotify_api_client,
-            config=self.config,
+        self._init_services()
+        self.cli = CLI(
+            services=self.services,
             repositories=self.repositories,
         )
-        self.youtube_scraper = YouTubeScraper(
-            api_client=self.youtube_api_client,
-            config=self.config,
-            repositories=self.repositories,
-        )
-
 
 
     def _init_repositories(self):
@@ -41,6 +36,10 @@ class App:
             pass
 
         self.repositories = Repositories()
+
+        self.repositories.artist = ArtistRepository(
+            session=self.db.session
+        )
 
         self.repositories.spotify_albums = SpotifyAlbumsRepository(
             api_client=self.spotify_api_client,
@@ -68,18 +67,30 @@ class App:
             config=self.config,
         )
 
+    def _init_services(self):
+        class Services:
+            pass
+
+        self.services = Services()
+
+        self.services.spotify_service = SpotifyService(
+            api_client=self.spotify_api_client,
+            config=self.config,
+            repositories=self.repositories
+        )
+        self.services.youtube_service = YouTubeService(
+            api_client=self.youtube_api_client,
+            config=self.config,
+            repositories=self.repositories
+        )
+
+        self.services.artist_service = ArtistService(
+            repositories=self.repositories,
+            session=self.db.session
+        )
 
     def run(self):
-        parser = argparse.ArgumentParser()
-        parser.add_argument("-spotify_artist_id", help="Spotify Artist ID")
-        parser.add_argument("-youtube_channel_id", help="YouTube channel ID")
-        args = parser.parse_args()
-
-        if args.spotify_artist_id:
-            self.spotify_scraper.main(args.spotify_artist_id)
-        
-        if args.youtube_channel_id:
-            self.youtube_scraper.main(args.youtube_channel_id)
+        self.cli.cli()
 
 
 if __name__ == "__main__":
