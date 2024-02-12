@@ -3,7 +3,8 @@ from database import DatabaseManager
 from services import (
     SpotifyService,
     YouTubeService,
-    ArtistService
+    ArtistService,
+    StatsService
 )
 from repositories import (
     ArtistRepository,
@@ -87,6 +88,12 @@ class App:
         self.services.artist_service = ArtistService(
             repositories=self.repositories,
             session=self.db.session
+        )
+
+        self.services.stats_service = StatsService(
+            session=self.db.session,
+            repositories=self.repositories,
+            services=self.services
         )
 
     def run(self):

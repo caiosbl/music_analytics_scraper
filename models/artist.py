@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer
+from sqlalchemy import Column, String, Integer, DateTime
 from .base import Base
 
 class Artist(Base):
@@ -11,6 +11,7 @@ class Artist(Base):
     apple_music_id = Column(String, nullable=True)
     amazon_music_id = Column(String, nullable=True)
     tidal_id = Column(String, nullable=True)
+    last_stats_update = Column(DateTime, nullable=True)
 
 
     def to_dict(self):

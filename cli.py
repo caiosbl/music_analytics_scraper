@@ -10,20 +10,14 @@ class CLI:
     def __init__(
             self,
             services,
-            repositories
+            repositories,
         ):
         self.artist_repository = repositories.artist
         self.artist_service = services.artist_service
         self.spotify_service = services.spotify_service
         self.youtube_service = services.youtube_service
+        self.stats_service = services.stats_service
         self.setup_cli_commands()
-
-    def _update_artist_stats(self, artist, skip_spotify, skip_youtube):
-        if not skip_youtube:
-            self.youtube_service.update_stats(artist.youtube_id)
-
-        if not skip_spotify:
-            self.spotify_service.update_stats(artist.spotify_id)
 
     def setup_cli_commands(self):
         @click.group()
@@ -104,17 +98,19 @@ class CLI:
                 console.print_exception(ArtistNotFoundError(f"Artist with id {artist_id} not found"))
                 return
             
-            self._update_artist_stats(artist, skip_spotify, skip_youtube)
+            self.stats_service.update_artist_stats(artist, skip_spotify, skip_youtube)
 
         @cli.command()
         @click.option('--skip_spotify', is_flag=True, help='Skip Spotify')
         @click.option('--skip_youtube', is_flag=True, help='Skip YouTube')
-        def update_all_artists_stats(skip_spotify, skip_youtube):
-            artists = self.artist_repository.get_all_artists()
+        @click.option('--only_without_stats', is_flag=True, help='Update only artists without stats')
+        def update_all_artists_stats(skip_spotify, skip_youtube, only_without_stats):
+            artists = self.artist_repository.get_all_artists() \
+                if not only_without_stats else self.artist_repository.get_artists_without_stats()
             with tqdm.tqdm(total=len(artists), desc="Updating artists stats") as pbar:
                 for artist in artists:
                     console.print(f"Updating stats for artist {artist.name}", style="green")
-                    self._update_artist_stats(artist, skip_spotify, skip_youtube)
+                    self.stats_service.update_artist_stats(artist, skip_spotify, skip_youtube)
                     pbar.update(1)
 
 
@@ -123,6 +119,7 @@ class CLI:
             table = Table(title="Artists")
             table.add_column("Name", style="cyan")
             table.add_column("ID", style="green")
+            table.add_column("Last stats update", style="blue")
             table.add_column("Spotify ID", style="magenta")
             table.add_column("YouTube ID", style="yellow")
             table.add_column("Deezer ID", style="red")
@@ -135,6 +132,7 @@ class CLI:
                 table.add_row(
                     artist.name,
                     str(artist.id),
+                    str(artist.last_stats_update),
                     artist.spotify_id,
                     artist.youtube_id,
                     artist.deezer_id,
