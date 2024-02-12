@@ -64,6 +64,7 @@ class ArtistService:
             artist.tidal_id = tidal_id
 
         self.session.commit()
+        return artist
 
 
 class ArtistNotFoundError(Exception):

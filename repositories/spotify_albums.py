@@ -1,6 +1,8 @@
-
+from rich.console import Console
 from models import SpotifyAlbum
 from sqlalchemy.dialects import postgresql
+
+console = Console()
 
 class SpotifyAlbumsRepository:
     def __init__(self, api_client, session, config):
@@ -13,7 +15,8 @@ class SpotifyAlbumsRepository:
         albums = []
         results = None
 
-        print(f"Getting albums from artist {artist_id}...")
+        console.print(f"Getting albums from artist {artist_id}...", style="yellow")
+
         while results is None or len(results) > 0:
             request = self.api_client.artist_albums(
                  artist_id,
