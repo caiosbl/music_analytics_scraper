@@ -1,6 +1,7 @@
 import locale
 from rich.console import Console
 from rich.table import Table
+from utils.format import format_number
 
 locale.setlocale(locale.LC_ALL, 'en_US')
 console = Console()
@@ -47,8 +48,8 @@ class ArtistReport:
         for track in self.top_10_youtube_tracks():
             youtube_top_10_table.add_row(
                 track.name,
-                f"{track.views:,}".replace(",", "."),
-                f"{track.like_count:,}".replace(",", ".")
+                format_number(track.views),
+                format_number(track.like_count),
             )
 
         console.print(youtube_top_10_table)
@@ -61,7 +62,7 @@ class ArtistReport:
         for track in self.top_10_spotify_tracks():
             spotify_top_10_table.add_row(
                 track.name,
-                f"{track.streams:,}".replace(",", "."),
+                format_number(track.streams),
             )
 
         console.print(spotify_top_10_table)

@@ -154,4 +154,13 @@ class CLI:
         def show_spotify_report(artist_id):
             self.report_service.show_spotify_artist_report(artist_id)
 
+        @cli.command()
+        @click.option('--artist_id_1', prompt='Artist ID 1', help='Artist ID 1', required=True)
+        @click.option('--artist_id_2', prompt='Artist ID 2', help='Artist ID 2', required=True)
+        def compare_artists(artist_id_1, artist_id_2):
+            try:
+                self.report_service.compare_artist_reports(artist_id_1, artist_id_2)
+            except ArtistNotFoundError as e:
+                console.print_exception(e)
+
         self.cli = cli

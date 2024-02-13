@@ -12,21 +12,25 @@ class SpotifyTrackRepository:
         self.api_client = api_client
         self.chunk_size = config['settings'].getint('spotify.chunk.size')
 
+    # Spotify can duplicate the same track in different albums
+    # So we need to get the distinct tracks
     def get_total_of_streams(self, spotify_artist_id):
-        return self.session.query(func.sum(
+        streams_by_music = self.session.query(func.sum(
             SpotifyTrack.streams
-        )).distinct(
-            SpotifyTrack.streams,
-            SpotifyTrack.name,
-        ).order_by(
-            SpotifyTrack.streams.desc(),
-            SpotifyTrack.name.desc()
-        ).filter(
+        )).filter(
             and_(
                 SpotifyTrack.artist_id==spotify_artist_id,
                 SpotifyTrack.streams.is_not(None)
             )
-        ).scalar()
+        ).group_by(
+            SpotifyTrack.name
+        ).subquery()
+
+        total_streams = self.session.query(func.sum(
+            streams_by_music.c.sum
+        )).scalar()
+
+        return total_streams
     
     def get_top_10_tracks(self, spotify_artist_id):
         return self.session.query(SpotifyTrack).distinct(
