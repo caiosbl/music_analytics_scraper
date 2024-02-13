@@ -17,6 +17,7 @@ class CLI:
         self.spotify_service = services.spotify_service
         self.youtube_service = services.youtube_service
         self.stats_service = services.stats_service
+        self.report_service = services.report_service
         self.setup_cli_commands()
 
     def setup_cli_commands(self):
@@ -142,5 +143,24 @@ class CLI:
                 )
             
             console.print(table)
+
+        @cli.command()
+        @click.option('--artist_id', prompt='Artist ID', help='Artist ID', required=True)
+        def show_youtube_report(artist_id):
+            self.report_service.show_youtube_artist_report(artist_id)
+
+        @cli.command()
+        @click.option('--artist_id', prompt='Artist ID', help='Artist ID', required=True)
+        def show_spotify_report(artist_id):
+            self.report_service.show_spotify_artist_report(artist_id)
+
+        @cli.command()
+        @click.option('--artist_id_1', prompt='Artist ID 1', help='Artist ID 1', required=True)
+        @click.option('--artist_id_2', prompt='Artist ID 2', help='Artist ID 2', required=True)
+        def compare_artists(artist_id_1, artist_id_2):
+            try:
+                self.report_service.compare_artist_reports(artist_id_1, artist_id_2)
+            except ArtistNotFoundError as e:
+                console.print_exception(e)
 
         self.cli = cli
