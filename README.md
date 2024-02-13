@@ -1,7 +1,7 @@
 # Music Analytics Scraper
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This repository contains code and documentation for scraping music statistics from various sources.
+This repository contains code and documentation for scraping music statistics like Spotify Music Streams from various sources.
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -13,6 +13,8 @@ This repository contains code and documentation for scraping music statistics fr
 ## Introduction
 
 The Music Analytics Scraper project aims to collect and analyze music statistics from different platforms and sources. By scraping data from popular music streaming services, social media platforms, and other sources, we can gain insights into music trends, popularity, and user preferences.
+
+And, by using this data, we can create reports, charts, and other visualizations to help us understand the music industry better.
 
 ## Requirements
 - [Docker](https://docs.docker.com/get-docker/)
@@ -76,7 +78,7 @@ make update_artist
 ```bash
 make list_artists
 ```
-![List Artists](assets/list-artists.png)
+![List Artists](assets/list_artists.png)
 
 ## Updating Artist Statistics:
 ```bash
