@@ -1,7 +1,7 @@
 # Music Analytics Scraper
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-This repository contains code and documentation for scraping music statistics from various sources.
+This repository contains code and documentation for scraping music statistics like Spotify Music Streams from various sources.
 
 ## Table of Contents
 - [Introduction](#introduction)
@@ -13,6 +13,8 @@ This repository contains code and documentation for scraping music statistics fr
 ## Introduction
 
 The Music Analytics Scraper project aims to collect and analyze music statistics from different platforms and sources. By scraping data from popular music streaming services, social media platforms, and other sources, we can gain insights into music trends, popularity, and user preferences.
+
+And, by using this data, we can create reports, charts, and other visualizations to help us understand the music industry better.
 
 ## Requirements
 - [Docker](https://docs.docker.com/get-docker/)
@@ -64,11 +66,19 @@ Example of running:
 ```bash
 make add_artist
 ```
+![Add Artist](assets/add-artist.png)
+
 
 ## Updating Artist ids:
 ```bash
 make update_artist
 ```
+
+### List Artists:
+```bash
+make list_artists
+```
+![List Artists](assets/list_artists.png)
 
 ## Updating Artist Statistics:
 ```bash
@@ -91,6 +101,28 @@ Youtube:
 ```bash
 make update_all_artists_stats --skip-youtube
 ```
+
+
+## Reports
+
+### Show Spotify Artist Report:
+```bash
+make show_spotify_report
+```
+![Spotify Report](assets/spotify_report.png)
+
+### Show Youtube Artist Report:
+```bash
+make show_youtube_report
+```
+![Youtube Report](assets/youtube_report.png)
+
+### Compare Artists Report:
+```bash
+make compare_artists_report
+```
+![Compare Report](assets/compare_artists.png)
+
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a [Pull Request](https://github.com/caiosbl/music_analytics_scraper/compare).
