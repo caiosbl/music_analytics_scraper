@@ -2,6 +2,7 @@ import tqdm
 from rich.console import Console
 from models import SpotifyTrack, SpotifyAlbumTrack
 from sqlalchemy.dialects import postgresql
+from sqlalchemy import and_, func
 
 console = Console()
 
@@ -10,6 +11,36 @@ class SpotifyTrackRepository:
         self.session = session
         self.api_client = api_client
         self.chunk_size = config['settings'].getint('spotify.chunk.size')
+
+    def get_total_of_streams(self, spotify_artist_id):
+        return self.session.query(func.sum(
+            SpotifyTrack.streams
+        )).distinct(
+            SpotifyTrack.streams,
+            SpotifyTrack.name,
+        ).order_by(
+            SpotifyTrack.streams.desc(),
+            SpotifyTrack.name.desc()
+        ).filter(
+            and_(
+                SpotifyTrack.artist_id==spotify_artist_id,
+                SpotifyTrack.streams.is_not(None)
+            )
+        ).scalar()
+    
+    def get_top_10_tracks(self, spotify_artist_id):
+        return self.session.query(SpotifyTrack).distinct(
+            SpotifyTrack.streams,
+            SpotifyTrack.name
+        ).order_by(
+            SpotifyTrack.streams.desc(),
+            SpotifyTrack.name.desc(),
+        ).filter(
+            and_(
+                SpotifyTrack.artist_id==spotify_artist_id,
+                SpotifyTrack.streams.is_not(None)
+            )
+        ).limit(10).all()
 
     def get_tracks(self, artist_id):
         album_tracks = self.session.query(SpotifyAlbumTrack).filter_by(artist_id=artist_id).all()

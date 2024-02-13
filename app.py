@@ -4,7 +4,8 @@ from services import (
     SpotifyService,
     YouTubeService,
     ArtistService,
-    StatsService
+    StatsService,
+    ReportService
 )
 from repositories import (
     ArtistRepository,
@@ -94,6 +95,10 @@ class App:
             session=self.db.session,
             repositories=self.repositories,
             services=self.services
+        )
+
+        self.services.report_service = ReportService(
+            repositories=self.repositories
         )
 
     def run(self):

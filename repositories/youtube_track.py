@@ -1,6 +1,7 @@
 import tqdm
 from models import YoutubeTrack
 from sqlalchemy.dialects import postgresql
+from sqlalchemy import and_, func
 from rich.console import Console
 
 console = Console()
@@ -10,6 +11,34 @@ class YoutubeTrackRepository:
         self.session = session
         self.api_client = api_client
         self.chunk_size = config['settings'].getint('youtube.chunk.size')
+
+    def get_total_of_views(self, channel_id):
+        return self.session.query(func.sum(
+            YoutubeTrack.views
+        )).filter(
+            and_(
+                YoutubeTrack.channel_id==channel_id,
+                YoutubeTrack.views.is_not(None)
+            )
+        ).scalar()
+    
+    def get_total_of_likes(self, channel_id):
+        return self.session.query(func.sum(YoutubeTrack.like_count)).filter(
+            and_(
+                YoutubeTrack.channel_id==channel_id,
+                YoutubeTrack.like_count.is_not(None)
+            )
+        ).scalar()
+    
+    def get_top_10_tracks(self, channel_id):
+        return self.session.query(YoutubeTrack).filter(
+            and_(
+                YoutubeTrack.channel_id==channel_id,
+                YoutubeTrack.views.is_not(None)
+            )
+        ).order_by(
+            YoutubeTrack.views.desc()
+        ).limit(10).all()
 
     def get_videos_by_id(self, channel_id):
         video_ids = []
