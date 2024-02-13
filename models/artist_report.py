@@ -3,8 +3,9 @@ from rich.console import Console
 from rich.table import Table
 from utils.format import format_number
 
-locale.setlocale(locale.LC_ALL, 'en_US')
+locale.setlocale(locale.LC_ALL, "en_US")
 console = Console()
+
 
 class ArtistReport:
     def __init__(self, artist, repositories):
@@ -13,32 +14,39 @@ class ArtistReport:
         self.spotify_track_repository = repositories.spotify_track
         self.youtube_track_repository = repositories.youtube_track
 
-
     def total_of_spotify_streams(self):
         return self.spotify_track_repository.get_total_of_streams(
             self.artist.spotify_id
         )
 
     def top_10_spotify_tracks(self):
-        return self.spotify_track_repository.get_top_10_tracks(
+        return self.spotify_track_repository.get_top_10_tracks(self.artist.spotify_id)
+
+    def total_of_youtube_views(self):
+        return self.youtube_track_repository.get_total_of_views(self.artist.youtube_id)
+
+    def top_10_youtube_tracks(self):
+        return self.youtube_track_repository.get_top_10_tracks(self.artist.youtube_id)
+
+    def total_of_youtube_likes(self):
+        return self.youtube_track_repository.get_total_of_likes(self.artist.youtube_id)
+
+    def average_of_youtube_views(self):
+        return self.youtube_track_repository.get_average_of_views(
+            self.artist.youtube_id
+        )
+
+    def average_of_spotify_streams(self):
+        return self.spotify_track_repository.get_average_of_streams(
             self.artist.spotify_id
         )
-    
-    def total_of_youtube_views(self):
-        return self.youtube_track_repository.get_total_of_views(
-            self.artist.youtube_id
-        )
-    
-    def top_10_youtube_tracks(self):
-        return self.youtube_track_repository.get_top_10_tracks(
-            self.artist.youtube_id
-        )
-    
-    def total_of_youtube_likes(self):
-        return self.youtube_track_repository.get_total_of_likes(
-            self.artist.youtube_id
-        )
-    
+
+    def total_of_spotify_tracks(self):
+        return self.spotify_track_repository.total_of_tracks(self.artist.spotify_id)
+
+    def total_of_youtube_tracks(self):
+        return self.youtube_track_repository.total_of_tracks(self.artist.youtube_id)
+
     def print_youtube_report(self):
         youtube_top_10_table = Table(title=f"Top 10 {self.artist.name} Youtube Tracks")
         youtube_top_10_table.add_column("Name", style="bold blue")
