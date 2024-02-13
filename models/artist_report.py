@@ -57,7 +57,7 @@ class ArtistReport:
             youtube_top_10_table.add_row(
                 track.name,
                 format_number(track.views),
-                format_number(track.like_count),
+                format_number(track.like_count) if track.like_count else "N/A",
             )
 
         console.print(youtube_top_10_table)

@@ -64,11 +64,19 @@ Example of running:
 ```bash
 make add_artist
 ```
+![Add Artist](assets/add-artist.png)
+
 
 ## Updating Artist ids:
 ```bash
 make update_artist
 ```
+
+### List Artists:
+```bash
+make list_artists
+```
+![List Artists](assets/list-artists.png)
 
 ## Updating Artist Statistics:
 ```bash
@@ -91,6 +99,28 @@ Youtube:
 ```bash
 make update_all_artists_stats --skip-youtube
 ```
+
+
+## Reports
+
+### Show Spotify Artist Report:
+```bash
+make show_spotify_report
+```
+![Spotify Report](assets/spotify_report.png)
+
+### Show Youtube Artist Report:
+```bash
+make show_youtube_report
+```
+![Youtube Report](assets/youtube_report.png)
+
+### Compare Artists Report:
+```bash
+make compare_artists_report
+```
+![Compare Report](assets/compare_artists.png)
+
 
 ## Contributing
 Contributions are welcome! Please feel free to submit a [Pull Request](https://github.com/caiosbl/music_analytics_scraper/compare).
