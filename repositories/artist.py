@@ -15,3 +15,6 @@ class ArtistRepository:
     
     def get_all_artists(self):
         return self.session.query(Artist).all()
+    
+    def get_artists_without_stats(self):
+        return self.session.query(Artist).filter(Artist.last_stats_update == None).all()
