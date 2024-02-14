@@ -157,9 +157,10 @@ class CLI:
         @cli.command()
         @click.option('--artist_id_1', prompt='Artist ID 1', help='Artist ID 1', required=True)
         @click.option('--artist_id_2', prompt='Artist ID 2', help='Artist ID 2', required=True)
-        def compare_artists(artist_id_1, artist_id_2):
+        @click.option('--save_to_file', is_flag=True, help='Save to file')
+        def compare_artists(artist_id_1, artist_id_2, save_to_file):
             try:
-                self.report_service.compare_artist_reports(artist_id_1, artist_id_2)
+                self.report_service.compare_artist_reports(artist_id_1, artist_id_2, save_to_file=save_to_file)
             except ArtistNotFoundError as e:
                 console.print_exception(e)
 
