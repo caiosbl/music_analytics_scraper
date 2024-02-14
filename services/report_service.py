@@ -1,8 +1,10 @@
+import openpyxl
 from rich.console import Console
 from rich.table import Table
 from models.artist_report import ArtistReport
 from services.artist_service import ArtistNotFoundError
 from utils.format import format_number
+import os
 
 console = Console()
 
@@ -45,8 +47,24 @@ class ReportService:
             f"{format_number(value_2)} ({title_2})",
             artist_1 if value_1 > value_2 else artist_2,
         )
+    
+    def save_comparison_to_file(
+        self, artist_1, artist_2, rows
+    ):
+        wb = openpyxl.Workbook()
+        ws = wb.active
+        ws.title = f"{artist_1.name} vs {artist_2.name}"
 
-    def compare_artist_reports(self, artist_id_1, artist_id_2):
+        ws.append(["Metric", artist_1.name, artist_2.name, "Winner"])
+
+        for row in rows:
+            ws.append([cell for cell in row])
+
+        file_path = f"reports/{artist_1.name.replace(" ", "_")}_vs_{artist_2.name.replace(" ", "_")}.xlsx"
+        os.makedirs("reports", exist_ok=True)
+        wb.save(file_path)
+
+    def compare_artist_reports(self, artist_id_1, artist_id_2, save_to_file=False):
         artist1 = self.artist_repository.get_artist(artist_id_1)
         artist2 = self.artist_repository.get_artist(artist_id_2)
 
@@ -66,6 +84,9 @@ class ReportService:
         artist_1_top_10_youtube_track = artist_report_1.top_10_youtube_tracks()
         artist_2_top_10_youtube_track = artist_report_2.top_10_youtube_tracks()
 
+        class FileTable:
+            pass
+
         compare_table = Table(title=f"{artist_1.name} vs {artist_2.name}")
 
         compare_table.add_column("Metric", style="bold blue")
@@ -73,38 +94,31 @@ class ReportService:
         compare_table.add_column(artist_2.name, style="bold blue")
         compare_table.add_column("Winner", style="bold blue")
 
-        compare_table.add_row(
-            *self._compare_absolute_metric(
+        row1 = self._compare_absolute_metric(
                 "Total Spotify Streams",
                 artist_report_1.total_of_spotify_streams(),
                 artist_report_2.total_of_spotify_streams(),
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_absolute_metric(
+        
+        row2 = self._compare_absolute_metric(
                 "Total Youtube Views",
                 artist_report_1.total_of_youtube_views(),
                 artist_report_2.total_of_youtube_views(),
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_absolute_metric(
+        
+        row3 = self._compare_absolute_metric(
                 "Total Youtube Likes",
                 artist_report_1.total_of_youtube_likes(),
                 artist_report_2.total_of_youtube_likes(),
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_relative_metric(
+        
+        row4 = self._compare_relative_metric(
                 "Most Popular Spotify Track Streams",
                 artist_1_top_10_spotify_track[0].streams,
                 artist_2_top_10_spotify_track[0].streams,
@@ -113,10 +127,8 @@ class ReportService:
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_relative_metric(
+        
+        row5 = self._compare_relative_metric(
                 "Most Popular Youtube Track Views",
                 artist_1_top_10_youtube_track[0].views,
                 artist_2_top_10_youtube_track[0].views,
@@ -125,10 +137,8 @@ class ReportService:
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_relative_metric(
+        
+        row6 = self._compare_relative_metric(
                 "Most Popular Youtube Track Likes",
                 artist_1_top_10_youtube_track[0].like_count,
                 artist_2_top_10_youtube_track[0].like_count,
@@ -137,46 +147,50 @@ class ReportService:
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_absolute_metric(
+        
+        row7 = self._compare_absolute_metric(
                 "Average Spotify Track Streams",
                 artist_report_1.average_of_spotify_streams(),
                 artist_report_2.average_of_spotify_streams(),
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_absolute_metric(
+        
+        row8 = self._compare_absolute_metric(
                 "Average Youtube Track Views",
                 artist_report_1.average_of_youtube_views(),
                 artist_report_2.average_of_youtube_views(),
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_absolute_metric(
+        
+        row9 = self._compare_absolute_metric(
                 "Total Spotify Tracks",
                 artist_report_1.total_of_spotify_tracks(),
                 artist_report_2.total_of_spotify_tracks(),
                 artist_1.name,
                 artist_2.name,
             )
-        )
-
-        compare_table.add_row(
-            *self._compare_absolute_metric(
+        
+        row10 = self._compare_absolute_metric(
                 "Total Youtube Tracks",
                 artist_report_1.total_of_youtube_tracks(),
                 artist_report_2.total_of_youtube_tracks(),
                 artist_1.name,
                 artist_2.name,
             )
-        )
+        
+        table_rows = [row1, row2, row3, row4, row5, row6, row7, row8, row9, row10]
+
+        for row in table_rows:
+            compare_table.add_row(*row)
 
         console.print(compare_table)
+
+        if save_to_file:
+            console.print("Saving comparison to file...", style="yellow")
+            self.save_comparison_to_file(
+                artist_1, artist_2, table_rows
+            )
+            console.print("Comparison saved to file", style="green")
+
