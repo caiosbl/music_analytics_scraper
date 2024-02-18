@@ -34,7 +34,9 @@ class ReportService:
         return (
             metric,
             format_number(value_1),
+            "N/A",
             format_number(value_2),
+            "N/A",
             artist_1 if value_1 > value_2 else artist_2,
         )
 
@@ -43,8 +45,10 @@ class ReportService:
     ):
         return (
             metric,
-            f"{format_number(value_1)} ({title_1})",
-            f"{format_number(value_2)} ({title_2})",
+            format_number(value_1),
+            title_1,
+            format_number(value_2),
+            title_2,
             artist_1 if value_1 > value_2 else artist_2,
         )
     
@@ -55,7 +59,13 @@ class ReportService:
         ws = wb.active
         ws.title = f"{artist_1.name} vs {artist_2.name}"
 
-        ws.append(["Metric", artist_1.name, artist_2.name, "Winner"])
+        ws.append([
+            "Metric",
+            f"{artist_1.name} - Metric value",
+            f"{artist_1.name} - Track name",
+            f"{artist_2.name} - Metric value",
+            f"{artist_2.name} - Track name", "Winner"
+        ])
 
         for row in rows:
             ws.append([cell for cell in row])
@@ -90,8 +100,10 @@ class ReportService:
         compare_table = Table(title=f"{artist_1.name} vs {artist_2.name}")
 
         compare_table.add_column("Metric", style="bold blue")
-        compare_table.add_column(artist_1.name, style="bold blue")
-        compare_table.add_column(artist_2.name, style="bold blue")
+        compare_table.add_column(f"{artist_1.name} - Metric value", style="bold blue")
+        compare_table.add_column(f"{artist_1.name} - Track name", style="bold blue")
+        compare_table.add_column(f"{artist_2.name} - Metric value", style="bold blue")
+        compare_table.add_column(f"{artist_2.name} - Track name", style="bold blue")
         compare_table.add_column("Winner", style="bold blue")
 
         row1 = self._compare_absolute_metric(
