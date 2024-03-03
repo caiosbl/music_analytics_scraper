@@ -5,3 +5,4 @@ from .spotify_service import SpotifyService
 from .artist_service import ArtistService
 from .stats_service import StatsService
 from .report_service import ReportService
+from .workbook_service import WorkbookService

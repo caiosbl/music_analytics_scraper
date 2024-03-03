@@ -11,6 +11,10 @@ class YoutubeTrack(Base):
     cover_url = Column(String)
     like_count = Column(BigInteger)
 
+    @property
+    def streams(self):
+        return self.views
+
     def to_dict(self):
         return {
             "id": self.id,
