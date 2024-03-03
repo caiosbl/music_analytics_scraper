@@ -3,10 +3,14 @@ from rich.console import Console
 from rich.table import Table
 from models.artist_report import ArtistReport
 from services.artist_service import ArtistNotFoundError
+from services.workbook_service import WorkbookService
 from utils.format import format_number
 import os
 
+
 console = Console()
+
+PLATFORMS = ["Spotify", "Youtube"]
 
 
 class ReportService:
@@ -52,12 +56,10 @@ class ReportService:
             artist_1 if value_1 > value_2 else artist_2,
         )
     
-    def save_comparison_to_file(
-        self, artist_1, artist_2, rows
+    def _save_comparison_to_workbook(
+        self, artist_1, artist_2, rows, workbook
     ):
-        wb = openpyxl.Workbook()
-        ws = wb.active
-        ws.title = f"{artist_1.name} vs {artist_2.name}"
+        ws = workbook.create_sheet(title=f"{artist_1.name} vs {artist_2.name}")
 
         ws.append([
             "Metric",
@@ -70,9 +72,20 @@ class ReportService:
         for row in rows:
             ws.append([cell for cell in row])
 
-        file_path = f"reports/{artist_1.name.replace(" ", "_")}_vs_{artist_2.name.replace(" ", "_")}.xlsx"
-        os.makedirs("reports", exist_ok=True)
-        wb.save(file_path)
+        return workbook
+    
+    def _save_top_10_to_workbook(self, artist_report, workbook):
+        artist = artist_report.artist
+
+        for platform in PLATFORMS:
+            top_10 = artist_report.get_top10_by_platform(platform.lower())
+            ws = workbook.create_sheet(title=f"{artist.name} Top 10 {platform} Tracks")
+            ws.append(["Name", "Streams"])
+
+            for track in top_10:
+                ws.append([track.name, track.streams])
+
+        return workbook
 
     def compare_artist_reports(self, artist_id_1, artist_id_2, save_to_file=False):
         artist1 = self.artist_repository.get_artist(artist_id_1)
@@ -201,8 +214,16 @@ class ReportService:
 
         if save_to_file:
             console.print("Saving comparison to file...", style="yellow")
-            self.save_comparison_to_file(
-                artist_1, artist_2, table_rows
+            workbook = WorkbookService.create_workbook()
+            workbook = self._save_comparison_to_workbook(
+                artist_1, artist_2, table_rows, workbook
+            )
+            workbook = self._save_top_10_to_workbook(artist_report_1, workbook)
+            workbook = self._save_top_10_to_workbook(artist_report_2, workbook)
+            WorkbookService.save_workbook_to_file(
+                workbook,
+                f"{artist_1.name.replace(" ", "_")}_vs_{artist_2.name.replace(" ", "_")}",
+                "reports"
             )
             console.print("Comparison saved to file", style="green")
 

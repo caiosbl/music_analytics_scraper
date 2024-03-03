@@ -27,6 +27,12 @@ class ArtistReport:
 
     def top_10_youtube_tracks(self):
         return self.youtube_track_repository.get_top_10_tracks(self.artist.youtube_id)
+    
+    def get_top10_by_platform(self, platform):
+        return {
+            "spotify": self.top_10_spotify_tracks(),
+            "youtube": self.top_10_youtube_tracks(),
+        }.get(platform)
 
     def total_of_youtube_likes(self):
         return self.youtube_track_repository.get_total_of_likes(self.artist.youtube_id)
